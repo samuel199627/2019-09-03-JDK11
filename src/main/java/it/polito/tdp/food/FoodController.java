@@ -8,6 +8,7 @@ import java.net.URL;
 
 import java.util.ResourceBundle;
 import it.polito.tdp.food.model.Model;
+import it.polito.tdp.food.model.VicinoPeso;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -43,7 +44,7 @@ public class FoodController {
     private Button btnCammino; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPorzioni"
-    private ComboBox<?> boxPorzioni; // Value injected by FXMLLoader
+    private ComboBox<String> boxPorzioni; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -51,13 +52,42 @@ public class FoodController {
     @FXML
     void doCammino(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Cerco cammino peso massimo...");
+    	txtResult.appendText("Cerco cammino peso massimo...\n\n");
+    	
+    	int passi=0;
+    	try {
+    		passi=Integer.parseInt(txtPassi.getText());
+    	}
+    	catch(NumberFormatException e) {
+    		System.out.println("\n\nDevi inserire un numero!!\n\n");
+    		return;
+    	}
+    	
+    	String partenza=boxPorzioni.getValue();
+    	if(partenza==null) {
+    		System.out.println("\n\nDevi selezionare un tipo di porzione!!\n\n");
+    		return;
+    	}
+    	
+    	
+    	txtResult.appendText(model.trovaPercorso(partenza, passi));
+    	
     }
 
     @FXML
     void doCorrelate(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Cerco porzioni correlate...");
+    	txtResult.appendText("Cerco porzioni correlate...\n");
+    	
+    	String selezionato=boxPorzioni.getValue();
+    	if(selezionato==null) {
+    		System.out.println("\n\nDevi selezionare un tipo di porzione!!\n\n");
+    		return;
+    	}
+    	
+    	for(VicinoPeso v: model.rstituisciVicini(selezionato)) {
+    		txtResult.appendText(v.getVicino()+" con peso "+v.getPeso()+"\n");
+    	}
     	
     }
 
@@ -76,6 +106,8 @@ public class FoodController {
     	
     	System.out.println("Calorie inserite: "+calorie);
     	model.creaGrafo(calorie);
+    	boxPorzioni.getItems().removeAll();
+    	boxPorzioni.getItems().addAll(model.restituisciVertici());
     	
     }
 

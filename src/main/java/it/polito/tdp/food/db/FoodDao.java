@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import it.polito.tdp.food.model.Adiacenza;
 import it.polito.tdp.food.model.Condiment;
 import it.polito.tdp.food.model.Food;
 import it.polito.tdp.food.model.Portion;
@@ -154,6 +156,49 @@ public class FoodDao {
 
 	}
 	
+	/*
+	 	otteniamo sia le adiacenze in una direzione che dall'altra ma le filtriamo poi dopo nella creazione degli archi
+	 */
+	public List<Adiacenza> listAllAdiacenze(){
+		String sql = "select p1.portion_display_name,p2.portion_display_name, count(distinct p1.food_code) as peso\n" + 
+				"from portion as p1, portion as p2\n" + 
+				"where p1.portion_display_name<>p2.portion_display_name and\n" + 
+				"	p1.food_code=p2.food_code \n" + 
+				"group by p1.portion_display_name,p2.portion_display_name" ;
+		
+		List<Adiacenza> adiacenze=new ArrayList<>();
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			
+		
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					adiacenze.add(new Adiacenza(
+							res.getString("p1.portion_display_name"), 
+							res.getString("p2.portion_display_name"), 
+							res.getInt("peso")
+							));
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+			
+			
+			conn.close();
+			return adiacenze ;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null ;
+		}
+
+	}
 	
 
 }
