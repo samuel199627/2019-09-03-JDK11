@@ -1,6 +1,7 @@
 package it.polito.tdp.food.db;
 
 import java.sql.Connection;
+
 import java.sql.SQLException;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -17,7 +18,7 @@ public class DBConnect {
 			HikariConfig config = new HikariConfig();
 			config.setJdbcUrl(jdbcURL);
 			config.setUsername("root");
-			config.setPassword("");
+			config.setPassword("Caraglio199627");
 			
 			// configurazione MySQL
 			config.addDataSourceProperty("cachePrepStmts", "true");

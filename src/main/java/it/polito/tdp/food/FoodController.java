@@ -65,6 +65,17 @@ public class FoodController {
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Creazione grafo...");
+    	int calorie=0;
+    	try {
+    		calorie=Integer.parseInt(txtCalorie.getText());
+    	}
+    	catch(NumberFormatException e) {
+    		System.out.println("\n\nDevi inserire un numero!!\n\n");
+    		return;
+    	}
+    	
+    	System.out.println("Calorie inserite: "+calorie);
+    	model.creaGrafo(calorie);
     	
     }
 

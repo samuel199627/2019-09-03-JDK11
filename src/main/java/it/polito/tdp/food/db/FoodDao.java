@@ -11,6 +11,7 @@ import it.polito.tdp.food.model.Food;
 import it.polito.tdp.food.model.Portion;
 
 public class FoodDao {
+	
 	public List<Food> listAllFoods(){
 		String sql = "SELECT * FROM food" ;
 		try {
@@ -101,6 +102,50 @@ public class FoodDao {
 			
 			conn.close();
 			return list ;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null ;
+		}
+
+	}
+	
+	public List<Portion> listAllPortionsCalories(int calories){
+		String sql = "select  portion_id, portion_amount, portion_display_name,calories, saturated_fats, food_code " + 
+				"from portion " + 
+				"where calories<?" ;
+		
+		List<Portion> porzioniVertici=new ArrayList<>();
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, calories);
+			
+		
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					porzioniVertici.add(new Portion(res.getInt("portion_id"),
+							res.getDouble("portion_amount"),
+							res.getString("portion_display_name"), 
+							res.getDouble("calories"),
+							res.getDouble("saturated_fats"),
+							res.getInt("food_code")
+							));
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+			System.out.println("\nPORZIONI: \n");
+			for(Portion p: porzioniVertici) {
+				System.out.println(p.toString());
+			}
+			
+			conn.close();
+			return porzioniVertici ;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
